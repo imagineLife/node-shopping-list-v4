@@ -69,11 +69,42 @@ app.put('/shopping-list/:id', jsonParser, (req, res) => {
     console.error(message);
     return res.status(400).send(message);
   }
+
   console.log(`Updating shopping list item \`${req.params.id}\``);
   ShoppingList.update({
     id: req.params.id,
     name: req.body.name,
     budget: req.body.budget
+  });
+  res.status(204).end();
+});
+
+app.put('/recipes/:id', jsonParser, (rep,res) => {
+  const requiredFields = ['name', 'id', 'ingredients'];
+  //loop through inputs, if one is missing alert user it is missing
+  for (i=0; i,requiredFields.length; i++) {
+    const field = requiredFields[i];
+    if (!(field in req.body)) {
+      const displayMessage = `Dope! You're missing the \`${field}\` field!`;
+      console.log(displayMessage);
+      return res.status(400).send(displayMessage);
+    }
+  }
+
+  //if the id in the parameters is NOT the same as the 
+  //ID in the body, alert user
+  if (req.params.id !== req.body.id) {
+    const errorMessage = `the id's not match, ya fool. cant mess with id ${req.params.id} and ${req.body.id}.`;
+    console.error(errorMessage);
+    return res.status(400).send(errorMessage);
+  }
+
+  //update the recipe with given ID
+  console.log(`Updating recipe \`${req.params.id}\``);
+  Recipes.update({
+    id: req.params.id,
+    name: req.params.name,
+    ingredients: req.params.ingredients
   });
   res.status(204).end();
 });
